@@ -18,7 +18,7 @@ const Login = ({setShowLogin,setShowtable_1}) => {
 async function handleLogin(e){
     e.preventDefault()
     try{
-      await axios.post("http://localhost:8000/Login",{
+      await axios.post("/Login",{
        email,password
 })
     .then(res=>{

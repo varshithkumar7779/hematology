@@ -74,7 +74,7 @@ const Home=()=>{
           opt='1';
       }
       try{
-        await axios.post("http://localhost:8000/values",{
+        await axios.post("/values",{
         Gender: parseInt(Gender),
         Hemoglobin: parseInt(Hemoglobin),
         MCH: parseInt(MCH),

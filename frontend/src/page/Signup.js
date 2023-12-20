@@ -33,7 +33,7 @@ async function opts(e) {
     setotpinput(true)
     if(opt1){
       try {
-        await axios.post("http://localhost:8000/otp", {
+        await axios.post("/otp", {
             email
         });
         } 
@@ -43,7 +43,7 @@ async function opts(e) {
     }
     else if(opt2){
       try {
-        await axios.post("http://localhost:8000/otpnum", {
+        await axios.post("/otpnum", {
             number
         });
         } 
@@ -62,7 +62,7 @@ async function handleSignup(e){
     e.preventDefault();
     try{
       
-      await axios.post("http://localhost:8000/Signup",{
+      await axios.post("/Signup",{
           name,number,email,password,otp
       })
       .then(res=>{
