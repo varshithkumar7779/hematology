@@ -1,33 +1,62 @@
 const express=require('express')
-const {coll,coll_1}=require('./mongo')
+const {coll,coll_1,coll_2,bloodbank}=require('./mongo')
 // import {collection,collection_1} from './mongo'
 const cors=require('cors')
 var nodemailer = require('nodemailer');
 const twilio = require('twilio');
 const {spawn} = require('child_process');  
-
-
 const app=express() 
 app.use(express.json())
 app.use(cors())
 var otpres = '';
 var email_value='';
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null,"uploads/");
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now();
+    cb(null,file.originalname);
+  }
+})
+const upload = multer({ storage: storage });
+//const upload = multer({ dest:'uploads/'});
+
+
+app.post('/upload-image',upload.single('image'),async(req,res) => {
+  const imageName=req.file.originalname;
+  console.log(imageName);
+  let result='';
+  const pythonProcess = spawn('python',['C:\\Users\\nemal\\OneDrive\\Desktop\\my-app\\backend\\dl.py',imageName], {
+    stdio: ["pipe", "pipe", "inherit"]
+  });
+  pythonProcess.stdout.on('data',(data)=>{
+  result+=data.toString();
+  });
+  pythonProcess.on('close',(data)=>{
+  result = JSON.parse(result)
+  console.log(result);
+  res.json({output: result});
+  });
+
+  try{
+    await coll_2.insertMany({image:imageName});
+  }
+  catch(error){
+    console.log('error')
+  }
+  console.log(result)
+});
 
 app.post('/values',async(req,res) => {
   let data1 = '';
   const{Gender,Hemoglobin,MCH,MCHC,MCV,opt}=req.body;
-  var py = spawn('python',['./node server/knn_aneamia.py',Gender,Hemoglobin,MCH,MCHC,MCV,opt]);
-
+  var py = spawn('python',['knn_aneamia.py',Gender,Hemoglobin,MCH,MCHC,MCV,opt]);
   py.stdout.on('data',(data) => {
       data1 += data.toString();
   });
-
-  
-  py.stderr.on('data',(data) => {
-    console.error(`Error from Python script: ${data}`);
-    res.status(500).send('Internal Server Error');
-  });
-
   py.on('close',async(code) => {
     console.log('code', code);
     data1 = JSON.parse(data1)
@@ -71,11 +100,9 @@ app.post('/otpnum', (req, res) => {
     })
     .then((message) => {
       console.log(message);
-      //res.json({ success: true, message: 'OTP sent successfully' });
     })
     .catch((error) => {
       console.error(error);
-      //res.json({ success: false, message: 'Failed to send OTP' });
     });
 
     otpres=a1;
@@ -121,17 +148,16 @@ app.post("/Login",async(req,res)=>{
      email_value=email;
 
      try{
-        const check=await coll.findOne({email:email})
-        const check_1=await coll.findOne({password:password})
-        if(check&&check_1){
-            res.json("exist")
-        }
+        const check=await coll.findOne({email:email,password:password})
+        if(check){
+          const { name, number } = check;
+          res.json({ status: "exist", name: name, number: number,email:email,password:password});        }
         else{
-            res.json("notexist")
+            res.json({ status: "notexist" })
         }
      }
      catch(e){
-        res.json("notexist")
+        res.json({ status: "notexist" })
      }
 })
 
@@ -165,8 +191,8 @@ app.post("/Signup",async(req,res)=>{
       }
 })
 
-app.get("/fgh",(req,res)=>{
-  console.log(coll.findOne())
+app.post("/Bloodsearch",async(req,res)=>{
+  await bloodbank.insertMany();
 })
 
 app.listen(8000,()=>{

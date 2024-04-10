@@ -14,9 +14,8 @@ df = pd.read_csv(r"C:\Users\nemal\OneDrive\Documents\folder12\hematology\anemia 
 df_1 = pd.read_csv(r"C:\Users\nemal\OneDrive\Documents\folder12\hematology\anemia data from Kaggle1.csv")
 
 
-def train_and_predict(classifier,X_train,y_train,X_test,test_case):
+def train_and_predict(classifier,X_train,y_train,test_case):
     classifier.fit(X_train, y_train)
-    y_pred = classifier.predict(X_test)
     predicted_outcome = classifier.predict([test_case])
     return predicted_outcome[0]
 
@@ -29,27 +28,27 @@ def main():
 
    
     knn_classifier = KNeighborsClassifier(n_neighbors=3)
-    knn_result = train_and_predict(knn_classifier,X_train,y_train,X_test,test_case)
+    knn_result = train_and_predict(knn_classifier,X_train,y_train,test_case)
 
     
     gnb_classifier = GaussianNB()
-    gnb_result = train_and_predict(gnb_classifier,X_train,y_train,X_test,test_case)
+    gnb_result = train_and_predict(gnb_classifier,X_train,y_train,test_case)
 
   
     rf_classifier = RandomForestClassifier(n_estimators=100,random_state=42)
-    rf_result = train_and_predict(rf_classifier,X_train,y_train,X_test,test_case)
+    rf_result = train_and_predict(rf_classifier,X_train,y_train,test_case)
 
     
     svm_classifier = SVC(kernel='linear', C=1)
-    svm_result = train_and_predict(svm_classifier,X_train,y_train,X_test,test_case)
+    svm_result = train_and_predict(svm_classifier,X_train,y_train,test_case)
 
     
     lr_classifier = LogisticRegression()
-    lr_result = train_and_predict(lr_classifier,X_train,y_train,X_test,test_case)
+    lr_result = train_and_predict(lr_classifier,X_train,y_train,test_case)
 
    
     dt_classifier = DecisionTreeClassifier(random_state=42)
-    dt_result = train_and_predict(dt_classifier,X_train,y_train,X_test,test_case)
+    dt_result = train_and_predict(dt_classifier,X_train,y_train,test_case)
 
     tolerance=1
     df_rounded = df.round(decimals=6)
@@ -81,27 +80,27 @@ def inaccurate():
 
 
     knn_classifier = KNeighborsClassifier(n_neighbors=3)
-    knn_result = train_and_predict(knn_classifier,X_train,y_train,X_test,test_case)
+    knn_result = train_and_predict(knn_classifier,X_train,y_train,test_case)
 
 
     gnb_classifier = GaussianNB()
-    gnb_result = train_and_predict(gnb_classifier,X_train,y_train,X_test,test_case)
+    gnb_result = train_and_predict(gnb_classifier,X_train,y_train,test_case)
 
 
     rf_classifier = RandomForestClassifier(n_estimators=100,random_state=42)
-    rf_result = train_and_predict(rf_classifier,X_train,y_train,X_test,test_case)
+    rf_result = train_and_predict(rf_classifier,X_train,y_train,test_case)
 
   
     svm_classifier = SVC(kernel='linear')
-    svm_result = train_and_predict(svm_classifier,X_train,y_train,X_test,test_case)
+    svm_result = train_and_predict(svm_classifier,X_train,y_train,test_case)
 
 
     lr_classifier = LogisticRegression()
-    lr_result = train_and_predict(lr_classifier,X_train,y_train,X_test,test_case)
+    lr_result = train_and_predict(lr_classifier,X_train,y_train,test_case)
 
 
     dt_classifier = DecisionTreeClassifier(random_state=42)
-    dt_result = train_and_predict(dt_classifier,X_train,y_train,X_test,test_case)
+    dt_result = train_and_predict(dt_classifier,X_train,y_train,test_case)
 
     tolerance=1
     df_rounded = df_1.round(decimals=6)

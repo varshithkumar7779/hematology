@@ -1,34 +1,30 @@
 import React, { useState } from 'react';
 import './Login.css';
-import {useNavigate} from "react-router-dom";
 import axios from 'axios';
-const Login = ({setShowLogin,setShowtable_1}) => {
-  const history = useNavigate();
+import { useNavigate } from 'react-router-dom';
+
+const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
-  const close=()=>{
-    setShowLogin(false);
-    var buttons = document.getElementsByTagName("button");
-          for (var i = 0; i < buttons.length; i++){
-                  buttons[i].disabled = false;
-            }
-  }
 
 async function handleLogin(e){
     e.preventDefault()
     try{
-      await axios.post("/Login",{
+      await axios.post("http://localhost:8000/Login",{
        email,password
 })
     .then(res=>{
-      if(res.data==="exist"){
+      if(res.data.status==="exist"){
             alert('Login successful! Redirecting to home......');
-            setShowLogin(false)
-            history("/",{state:{id:email}})
-            setShowtable_1(true)
-      }
-      else if(res.data==="notexist"){
+            navigate('/Home', { state: {
+              name: res.data.name,
+              number: res.data.number,
+              email: res.data.email,
+              password: res.data.password
+            }});
+          }
+      else if(res.data.status==="notexist"){
         alert("you haven't signup")
       }
     })
@@ -41,13 +37,8 @@ catch(e){
     console.log(e)
 }
 };
-
   return (
     <div className='box'>
-      <button
-        onClick={close}
-        className='close'
-        >X</button>
       <h1>Login</h1>
       <form>
         <label className='l1'>Email : </label>

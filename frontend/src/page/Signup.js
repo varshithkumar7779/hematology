@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import './Signup.css';
-import {useNavigate} from "react-router-dom";
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 
-const Signup = ({setShowSignup,setShowtable}) => {
-  const history=useNavigate();
+const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
@@ -16,15 +15,6 @@ const Signup = ({setShowSignup,setShowtable}) => {
   const [otpinput, setotpinput] = useState(false);
 
 
-const close=()=>{
-  setShowSignup(false);
-  var buttons = document.getElementsByTagName("button");
-        for (var i = 0; i < buttons.length; i++){
-                buttons[i].disabled = false;
-          }
-}
-
-
 async function opts(e) {
     if(opt1 || opt2){
     //alert(`opt1: ${opt1}, opt2: ${opt2}`)
@@ -33,7 +23,7 @@ async function opts(e) {
     setotpinput(true)
     if(opt1){
       try {
-        await axios.post("/otp", {
+        await axios.post("http://localhost:8000/otp", {
             email
         });
         } 
@@ -62,7 +52,7 @@ async function handleSignup(e){
     e.preventDefault();
     try{
       
-      await axios.post("/Signup",{
+      await axios.post("http://localhost:8000/Signup",{
           name,number,email,password,otp
       })
       .then(res=>{
@@ -71,9 +61,6 @@ async function handleSignup(e){
         }
         else if(res.data==="notexist"){
             alert('Signup successful! Redirecting to home......');
-            setShowtable(true);
-            setShowSignup(false);
-            history("/",{state:{id:email}})
         }
         else if(res.data==="otpfailed"){
           alert('OTP verification failed');
@@ -94,9 +81,6 @@ async function handleSignup(e){
   return (
     <>
     <div className='box'>
-    <button
-          onClick={close}
-          className='close'>X</button>
       <h2>Sign Up</h2>
       <form className='input-container'>
         <label className='s1'>Name : </label>
@@ -138,7 +122,6 @@ async function handleSignup(e){
       <br></br>
         <div>
         <label>Choose the type of verification method</label>
-
         <br></br>
         <input 
         type="radio"
@@ -175,6 +158,7 @@ async function handleSignup(e){
       <div className='btn_flex'>
           <button className='btn_1' onClick={handleSignup}>Signup</button>
       </div>
+      <div>Already signed up? <Link to="/Login">Login</Link></div>
     </div>
     </>
   );
