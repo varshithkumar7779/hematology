@@ -1,80 +1,29 @@
-<<<<<<< HEAD
-# Getting Started with Create React App
+## Hematology Web Lab
+## Overview:
+The Hematology Web Lab is a medical prediction platform that evaluates hematological parameters to classify individuals as anemic or non-anemic. It uses various machine learning models trained on health-related features to make accurate health predictions and is accessible via a clean web interface.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Features:
+Anemia Classification: Predicts whether a user is anemic or not based on input parameters.
 
-## Available Scripts
+Multiple ML Algorithms: Supports Logistic Regression, Decision Trees, Random Forest, SVM, KNN, and more.
 
-In the project directory, you can run:
+Input Features: Gender, Hemoglobin, MCV, MCH, MCHC.
 
-### `npm start`
+Model Evaluation: Based on metrics like accuracy and precision.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Best Model Deployment: Most performant model deployed for real-time predictions.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+User-Friendly UI: Clean web interface for entering parameters and viewing results.
 
-### `npm test`
+## Tech Stack:
+Frontend: React.js (MERN)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Backend: Node.js, Express.js
 
-### `npm run build`
+Database: MongoDB
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+ML Models: Logistic Regression, Decision Trees, Random Forest, SVM, KNN, Linear Regression (for analysis)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Deployment: Model hosted via Python (Flask/FastAPI), or Node-Python integration
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-=======
-# hematology-web
->>>>>>> origin/main
-"# hematology" 
-"# hematology" 
-"# hematology-web1" 
-"# hematology" 
-"# hematology" 
-"# hematology" 
+Visualization & Evaluation: Matplotlib/Seaborn for model analysis (during development)
