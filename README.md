@@ -22,8 +22,4 @@ Backend: Node.js, Express.js
 
 Database: MongoDB
 
-ML Models: Logistic Regression, Decision Trees, Random Forest, SVM, KNN, Linear Regression (for analysis)
-
-Deployment: Model hosted via Python (Flask/FastAPI), or Node-Python integration
-
-Visualization & Evaluation: Matplotlib/Seaborn for model analysis (during development)
+ML Models: Logistic Regression, Decision Trees, Random Forest, SVM, KNN
