@@ -1,54 +1,77 @@
-const express=require('express')
-const {coll,coll_1,coll_2,bloodbank}=require('./mongo')
+const {coll,coll_1,coll_2}=require('./mongo')
 // import {collection,collection_1} from './mongo'
-const cors=require('cors')
-var nodemailer = require('nodemailer');
+const express=require('express');
+const cors=require('cors');
+const multer = require('multer');
+const {spawn} = require('child_process');
+const path=require('path');
+const app=express();
+
+app.use(express.json());
+app.use(cors());
+const nodemailer = require('nodemailer');
 const twilio = require('twilio');
-const {spawn} = require('child_process');  
-const app=express() 
-app.use(express.json())
-app.use(cors())
 var otpres = '';
 var email_value='';
-const multer = require('multer');
 
+// Serve uploaded files statically
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Configure multer for file uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null,"uploads/");
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now();
-    cb(null,file.originalname);
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + '-' + file.originalname);
   }
-})
-const upload = multer({ storage: storage });
-//const upload = multer({ dest:'uploads/'});
-
-
-app.post('/upload-image',upload.single('image'),async(req,res) => {
-  const imageName=req.file.originalname;
-  console.log(imageName);
-  let result='';
-  const pythonProcess = spawn('python',['C:\\Users\\nemal\\OneDrive\\Desktop\\my-app\\backend\\dl.py',imageName], {
-    stdio: ["pipe", "pipe", "inherit"]
-  });
-  pythonProcess.stdout.on('data',(data)=>{
-  result+=data.toString();
-  });
-  pythonProcess.on('close',(data)=>{
-  result = JSON.parse(result)
-  console.log(result);
-  res.json({output: result});
-  });
-
-  try{
-    await coll_2.insertMany({image:imageName});
-  }
-  catch(error){
-    console.log('error')
-  }
-  console.log(result)
 });
+
+const upload = multer({ storage });
+app.post('/upload-image', upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+
+  // Full absolute path to the uploaded file
+  const imagePath = path.join(__dirname, 'uploads', req.file.filename);
+
+  const pythonPath = path.join(__dirname, 'dl.py');
+
+  // Spawn Python process
+  const py = spawn('python', [pythonPath, imagePath]);
+
+  let output = ""; // accumulate all stdout here
+
+  py.stdout.on('data', (data) => {
+    output += data.toString(); // append chunks
+  });
+
+  py.stderr.on('data', (data) => {
+    console.error(`Python error: ${data}`);
+  });
+
+  py.on('close', (code) => {
+    if (code !== 0) {
+      return res.status(500).json({ error: 'Python script error' });
+    }
+
+    try {
+      // keep only the last line (JSON)
+      const lastLine = output.trim().split("\n").pop();
+      const parsed = JSON.parse(lastLine);
+      console.log("✅ Parsed JSON:", parsed);
+      res.json(parsed);
+    } catch (err) {
+      console.error('❌ Parse error:', err.message, "OUTPUT:", output);
+      res.status(500).json({ error: 'Invalid response format' });
+    }
+  });
+
+});
+
+
 
 app.post('/values',async(req,res) => {
   let data1 = '';
@@ -112,9 +135,6 @@ app.post('/otpnum', (req, res) => {
     otpres=100;
 }
   });
-
-
-
 
 app.post("/otp",async(req,res)=>{
   const{email}=req.body
@@ -189,10 +209,6 @@ app.post("/Signup",async(req,res)=>{
     catch(e){
         res.json('error occured');
       }
-})
-
-app.post("/Bloodsearch",async(req,res)=>{
-  await bloodbank.insertMany();
 })
 
 app.listen(8000,()=>{

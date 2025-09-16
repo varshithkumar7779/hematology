@@ -1,29 +1,32 @@
-import warnings
-warnings.filterwarnings('ignore')
-import pickle
-import tensorflow as tf
-import os
-import sys
-import json
-import numpy as np
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.preprocessing import image
+from gradio_client import Client, handle_file
+import sys, io, json, os
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
+def classify_image(image_path: str):
+    space_url = "varshithkumar/wbc-resnet50"
+    client = Client(space_url)
+
+    # Correct way: wrap the local path in a dict with key "path"
+    result = client.predict(
+        image=handle_file(image_path),  # upload file automatically
+        api_name="/predict"
+    )
+    return result
 
 
-os.environ["TF_CPP_MIN_LOG_LEVEL"] = "2"
+def main():
+    #image_path = r"C:\Users\nemal\OneDrive\Desktop\my-app\backend\uploads\1756710647634-377832412-20190526_163027_0.jpg"
+    image_path = sys.argv[1]
+    #print(os.path.exists(image_path))  # Should print True
 
-x=sys.argv[1]
-x=str(x)
-clone_model=pickle.load(open(r"C:\Users\nemal\OneDrive\Desktop\my-app\backend\dlmodel","rb"))
-dir_path=r"uploads/"+x
-img=image.load_img(dir_path,target_size=(120,120,3))
-X=image.img_to_array(img)
-X=np.expand_dims(X,axis=0)
-images=np.vstack([X])
-ans=clone_model.predict(images,verbose=0)
-if(ans[0][0]<0.5):
-    sys.stdout.write(json.dumps({"output": "EOSINOPHIL"}))
-else:
-    sys.stdout.write(json.dumps({"output": "NEUTROPHIL"}))
+    predictions = classify_image(image_path)
 
-sys.stdout.flush()
+    #print("\n Prediction Results:")
+    #if isinstance(predictions, dict) and "confidences" in predictions:
+    #    for conf in predictions["confidences"]:
+    #        print(f"{conf['label']}: {conf['confidence']:.2f}")
+    #else:
+    print(json.dumps(predictions))
+
+if __name__ == "__main__":
+    main()
